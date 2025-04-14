@@ -1,0 +1,30 @@
+Source: rocm-rocprofiler-register
+Section: devel
+Priority: optional
+Maintainer: CHEN Xuan <chenxuan@iscas.ac.cn>
+Rules-Requires-Root: no
+Build-Depends:
+ debhelper-compat (= 13),
+ cmake,
+ rocm-cmake,
+ rocm-core,
+ rocm-llvm,
+ libfmt-dev,
+ libgoogle-glog-dev,
+Standards-Version: 4.7.0
+Vcs-Browser: https://github.com/r-rocm/rocprofiler-register
+Vcs-Git: https://github.com/r-rocm/rocprofiler-register.git
+
+Package: rocm-rocprofiler-register
+Architecture: any
+Depends:
+ ${shlibs:Depends},
+ ${misc:Depends},
+ rocm-core,
+Description:  a helper library to help ROCprofiler to interact with ROCm runtime
+ The rocprofiler-register library is a helper library that coordinates the
+ modification of the intercept API table(s) of the HSA/HIP/ROCTx runtime
+ libraries by the ROCprofiler (v2) library. The purpose of this library is to
+ provide a consistent and automated mechanism of enabling performance analysis
+ in the ROCm runtimes which does not rely on environment variables or unique
+ methods for each runtime library.

@@ -1,0 +1,48 @@
+#!/usr/bin/make -f
+
+export DH_VERBOSE = 1
+
+PKG_NAME=rocm-rocprofiler-register
+
+ROCM_VERSION=$(shell cat /opt/REVYOS_ROCM_VERSION)
+ROCM_PATH=/opt/rocm-$(ROCM_VERSION)
+
+MAKEOPTS="-j$$(($$(nproc) / 2))"
+
+TOP_DIR := $(shell pwd)
+SRC_PATH := $(TOP_DIR)
+BUILD_PATH := $(TOP_DIR)/build-rocm
+DEB_INST_DIR := $(TOP_DIR)/debian/$(PKG_NAME)
+
+REVYOS_ROCM_CMAKE_PARAMS := -S $(SRC_PATH) -B $(BUILD_PATH)
+REVYOS_ROCM_CMAKE_PARAMS += -DCMAKE_INSTALL_PREFIX=$(ROCM_PATH)
+REVYOS_ROCM_CMAKE_PARAMS += -DCMAKE_C_COMPILER=$(ROCM_PATH)/bin/clang
+REVYOS_ROCM_CMAKE_PARAMS += -DCMAKE_CXX_COMPILER=$(ROCM_PATH)/bin/clang++
+REVYOS_ROCM_CMAKE_PARAMS += -DCMAKE_BUILD_TYPE=Release
+REVYOS_ROCM_CMAKE_PARAMS += -DCMAKE_VERBOSE_MAKEFILE=TRUE
+REVYOS_ROCM_CMAKE_PARAMS += -DCMAKE_PREFIX_PATH="$(ROCM_PATH);$(ROCM_PATH)/share/rocm/cmake/;$(ROCM_PATH)/share/rocmcmakebuildtools/cmake"
+
+%:
+	dh $@
+
+# CMAKE_FIND_PACKAGE_TARGETS_GLOBAL must be set to TRUE
+# to enable system glog and fmt library
+override_dh_auto_configure:
+	cmake $(REVYOS_ROCM_CMAKE_PARAMS) \
+		-DBUILD_SHARED_LIBS="OFF" \
+		-DENABLE_LDCONFIG=OFF \
+		-DROCPROFILER_REGISTER_BUILD_CI=1 \
+		-DROCPROFILER_REGISTER_BUILD_TESTS=1 \
+		-DROCPROFILER_REGISTER_BUILD_SAMPLES=1 \
+		-DROCPROFILER_REGISTER_BUILD_GLOG=OFF \
+		-DROCPROFILER_REGISTER_BUILD_FMT=OFF \
+		-DCMAKE_FIND_PACKAGE_TARGETS_GLOBAL=TRUE
+
+override_dh_auto_build:
+	cmake --build $(BUILD_PATH) -- $(MAKEOPTS)
+
+override_dh_auto_install:
+	DESTDIR=$(DEB_INST_DIR)/ cmake --build $(BUILD_PATH) -- $(MAKEOPTS) install
+
+override_dh_install:
+	echo "dh_install skipped"

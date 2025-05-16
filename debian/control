@@ -28,3 +28,17 @@ Description:  a helper library to help ROCprofiler to interact with ROCm runtime
  provide a consistent and automated mechanism of enabling performance analysis
  in the ROCm runtimes which does not rely on environment variables or unique
  methods for each runtime library.
+
+Package: rocm-rocprofiler-register-dev
+Architecture: any
+Depends:
+ ${shlibs:Depends},
+ ${misc:Depends},
+ rocm-roc-profiler-register,
+Description:  a helper library to help ROCprofiler to interact with ROCm runtime
+ The rocprofiler-register library is a helper library that coordinates the
+ modification of the intercept API table(s) of the HSA/HIP/ROCTx runtime
+ libraries by the ROCprofiler (v2) library. The purpose of this library is to
+ provide a consistent and automated mechanism of enabling performance analysis
+ in the ROCm runtimes which does not rely on environment variables or unique
+ methods for each runtime library.

@@ -34,7 +34,7 @@ Architecture: any
 Depends:
  ${shlibs:Depends},
  ${misc:Depends},
- rocm-roc-profiler-register,
+ rocm-rocprofiler-register,
 Description:  a helper library to help ROCprofiler to interact with ROCm runtime
  The rocprofiler-register library is a helper library that coordinates the
  modification of the intercept API table(s) of the HSA/HIP/ROCTx runtime

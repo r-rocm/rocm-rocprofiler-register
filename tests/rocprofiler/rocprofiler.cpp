@@ -1,6 +1,9 @@
 
 #include <amdhip/amdhip.hpp>
 #include <hsa-runtime/hsa-runtime.hpp>
+#include <rccl/rccl.hpp>
+#include <rocdecode/rocdecode.hpp>
+#include <rocjpeg/rocjpeg.hpp>
 #include <roctx/roctx.hpp>
 
 #include <dlfcn.h>
@@ -27,6 +30,27 @@ void
 hsa_init()
 {
     printf("[%s] %s\n", ROCP_REG_FILE_NAME, __FUNCTION__);
+}
+
+ncclResult_t
+ncclGetVersion(int*)
+{
+    printf("[%s] %s\n", ROCP_REG_FILE_NAME, __FUNCTION__);
+    return {};
+}
+
+rocDecStatus
+rocDecCreateDecoder(rocDecDecoderHandle*, RocDecoderCreateInfo*)
+{
+    printf("[%s] %s\n", ROCP_REG_FILE_NAME, __FUNCTION__);
+    return {};
+}
+
+RocJpegStatus
+rocJpegStreamCreate(RocJpegStreamHandle* jpeg_stream_handle)
+{
+    printf("[%s] %s\n", ROCP_REG_FILE_NAME, __FUNCTION__);
+    return {};
 }
 
 void
@@ -75,9 +99,12 @@ rocprofiler_set_api_table(const char* name,
                                       " did not contain rocprofiler_configure symbol" };
     }
 
-    using hip_table_t   = hip::HipApiTable;
-    using hsa_table_t   = hsa::HsaApiTable;
-    using roctx_table_t = roctx::ROCTxApiTable;
+    using hip_table_t       = hip::HipApiTable;
+    using hsa_table_t       = hsa::HsaApiTable;
+    using roctx_table_t     = roctx::ROCTxApiTable;
+    using rccl_table_t      = rccl::rcclApiFuncTable;
+    using rocdecode_table_t = rocdecode::rocdecodeApiFuncTable;
+    using rocjpeg_table_t   = rocjpeg::rocjpegApiFuncTable;
 
     auto* _wrap_v = std::getenv("ROCP_REG_TEST_WRAP");
     bool  _wrap   = (_wrap_v != nullptr && std::stoi(_wrap_v) != 0);
@@ -106,6 +133,21 @@ rocprofiler_set_api_table(const char* name,
             roctx_table_t* _table     = static_cast<roctx_table_t*>(tables[0]);
             _table->roctxRangePush_fn = &rocprofiler::roctx_range_push;
             _table->roctxRangePop_fn  = &rocprofiler::roctx_range_pop;
+        }
+        else if(std::string_view{ name } == "rccl")
+        {
+            rccl_table_t* _table      = static_cast<rccl_table_t*>(tables[0]);
+            _table->ncclGetVersion_fn = &rocprofiler::ncclGetVersion;
+        }
+        else if(std::string_view{ name } == "rocdecode")
+        {
+            rocdecode_table_t* _table      = static_cast<rocdecode_table_t*>(tables[0]);
+            _table->rocDecCreateDecoder_fn = &rocprofiler::rocDecCreateDecoder;
+        }
+        else if(std::string_view{ name } == "rocjpeg")
+        {
+            rocjpeg_table_t* _table        = static_cast<rocjpeg_table_t*>(tables[0]);
+            _table->rocJpegStreamCreate_fn = &rocprofiler::rocJpegStreamCreate;
         }
     }
 

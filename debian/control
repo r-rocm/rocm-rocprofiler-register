@@ -12,8 +12,8 @@ Build-Depends:
  libfmt-dev,
  libgoogle-glog-dev,
 Standards-Version: 4.7.0
-Vcs-Browser: https://github.com/r-rocm/rocprofiler-register
-Vcs-Git: https://github.com/r-rocm/rocprofiler-register.git
+Vcs-Browser: https://github.com/revyos-rocm/rocprofiler-register
+Vcs-Git: https://github.com/revyos-rocm/rocprofiler-register.git
 
 Package: rocm-rocprofiler-register
 Architecture: any

@@ -1,3 +1,9 @@
+rocm-rocprofiler-register (6.4.1-1) trixie; urgency=medium
+
+  * Release 6.4.1.
+
+ --  <chenxuan@iscas.ac.cn>  Thu, 17 Jul 2025 18:13:44 +0800
+
 rocm-rocprofiler-register (6.2.4-3) unstable; urgency=medium
 
   * fix depends

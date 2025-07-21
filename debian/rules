@@ -47,3 +47,10 @@ override_dh_auto_install:
 override_dh_install:
 	sed -i "s,@ROCM_VERSION@,${ROCM_VERSION},g" debian/*.install
 	dh_install
+
+# Failed with 'Unknown debugging section ".debug_str_offsets"'
+# According to https://bugs-devel.debian.org/cgi-bin/bugreport.cgi?bug=1033015
+# Just skip dwz
+override_dh_dwz:
+	:
+

@@ -8,7 +8,7 @@ Build-Depends:
  cmake,
  rocm-cmake,
  rocm-core,
- rocm-llvm,
+ rocm-llvm (>= 7.0.0),
  libfmt-dev,
  libgoogle-glog-dev,
 Standards-Version: 4.7.0
